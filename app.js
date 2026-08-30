@@ -1,3 +1,4 @@
+alert("app.js is running!");
 const cfg=window.APP_CONFIG||{};const supabase=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY);let students=[],selected=null,question=null,token=null,rating=0,adminUser=null;
 const $=id=>document.getElementById(id);const show=id=>['rosterView','loginView','dashboardView','adminLoginView','adminView'].forEach(x=>$(x).classList.toggle('hidden',x!==id));const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 async function load(){try{students=await fetch('data/students.json').then(r=>r.json());$('statusPill').textContent=`${students.length} students`;render(students)}catch(e){$('statusPill').textContent='Data error'}}
