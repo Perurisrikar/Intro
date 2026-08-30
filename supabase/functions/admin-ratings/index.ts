@@ -1,0 +1,3 @@
+import {admin,cors,response,requireAdmin} from '../_shared.ts';
+Deno.serve(async req=>{if(req.method==='OPTIONS')return new Response('ok',{headers:cors});try{await requireAdmin(req);const b=await req.json();if(b.action!=='list')throw Error('Unknown action');const {data,error}=await admin.from('ratings').select('id,rating,feedback,created_at,students(name,roll)').order('created_at',{ascending:false});if(error)throw error;return response({ratings:(data||[]).map((r:any)=>({...r,student_name:r.students?.name,roll:r.students?.roll}))})}catch(e){return response({error:e.message||'Admin request failed'},e.message==='Unauthorized'||e.message==='Admin access required'?401:400)}})
+
