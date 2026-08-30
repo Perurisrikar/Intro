@@ -24,4 +24,78 @@ window.editStudent=async id=>{let s=students.find(x=>x.id===id);if(!s){let d=awa
 document.addEventListener('submit',async e=>{if(e.target.id==='editStudentForm'){e.preventDefault();let f=new FormData(e.target);await api('admin-students',{action:'update',id:f.get('id'),roll:f.get('roll'),name:f.get('name'),section:f.get('section'),branch:f.get('branch')});$('modal').classList.add('hidden');await loadAdminStudents()}});
 window.editQuestion=async id=>{let q=window.questions.find(x=>x.id===id);modal('Edit question',`<form class="modal-form" id="editQuestionForm"><input type="hidden" name="id" value="${esc(q.id)}"><label>Question<input name="question_text" value="${esc(q.question_text)}" required></label><label>New answer (optional)<input name="answer" placeholder="Leave blank to keep existing answer"></label><label>Active<select name="active"><option value="true" ${q.active?'selected':''}>Active</option><option value="false" ${!q.active?'selected':''}>Off</option></select></label><div class="modal-actions"><button type="submit">Save</button></div></form>`)};
 document.addEventListener('submit',async e=>{if(e.target.id==='editQuestionForm'){e.preventDefault();let f=new FormData(e.target);await api('admin-questions',{action:'update',id:f.get('id'),question_text:f.get('question_text'),answer:f.get('answer'),active:f.get('active')==='true'});$('modal').classList.add('hidden');await loadQuestions()}});window.deleteQuestion=async id=>{if(confirm('Delete this question?')){await api('admin-questions',{action:'delete',id});await loadQuestions();await loadAdminStudents()}};$('refreshRatings').onclick=loadRatings;
-document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.tab-panel').forEach(x=>x.classList.add('hidden'));$(b.dataset.tab).classList.remove('hidden')});load();
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.tab-panel').forEach(x=>x.classList.add('hidden'));$(b.dataset.tab).classList.remove('hidden')});// ===== DEBUG MODE =====
+window.addEventListener("error", function (event) {
+    alert(
+        "JAVASCRIPT ERROR\n\n" +
+        "Message: " + event.message + "\n" +
+        "File: " + event.filename + "\n" +
+        "Line: " + event.lineno
+    );
+});
+
+window.addEventListener("unhandledrejection", function (event) {
+    alert(
+        "PROMISE ERROR\n\n" +
+        (event.reason?.message || event.reason || "Unknown error")
+    );
+});
+
+async function debugLoad() {
+    console.log("=== CSM-D DEBUG ===");
+    console.log("1. app.js loaded");
+    console.log("Config:", window.APP_CONFIG);
+
+    try {
+        console.log("2. Supabase object:", window.supabase);
+
+        if (!window.APP_CONFIG) {
+            throw new Error("APP_CONFIG is missing. config.js did not load.");
+        }
+
+        if (!window.APP_CONFIG.SUPABASE_URL ||
+            window.APP_CONFIG.SUPABASE_URL.includes("YOUR_")) {
+            throw new Error("Supabase URL is missing/incorrect in config.js");
+        }
+
+        if (!window.APP_CONFIG.SUPABASE_ANON_KEY ||
+            window.APP_CONFIG.SUPABASE_ANON_KEY.includes("YOUR_")) {
+            throw new Error("Supabase anon key is missing/incorrect in config.js");
+        }
+
+        console.log("3. Supabase configuration looks present");
+
+        const { data, error } = await supabase
+            .from("students")
+            .select("id")
+            .limit(1);
+
+        console.log("4. Database test:", data, error);
+
+        if (error) {
+            throw new Error(
+                "Supabase database test failed:\n" +
+                error.message
+            );
+        }
+
+        console.log("5. Database connection works!");
+
+        await load();
+
+        console.log("6. load() completed");
+        alert("DEBUG SUCCESS!\n\nSupabase connection and database test worked.");
+
+    } catch (error) {
+        console.error("DEBUG ERROR:", error);
+
+        alert(
+            "❌ ERROR FOUND\n\n" +
+            "Message:\n" +
+            (error.message || error) +
+            "\n\nOpen browser console for more details."
+        );
+    }
+}
+
+debugLoad();
