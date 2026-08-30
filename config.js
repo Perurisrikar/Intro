@@ -1,1 +1,1 @@
-window.APP_CONFIG={SUPABASE_URL:'YOUR_SUPABASE_URL',SUPABASE_ANON_KEY:'YOUR_SUPABASE_ANON_KEY'};
+window.APP_CONFIG={SUPABASE_URL:'https://xywzwxdczxvqocmghujz.supabase.co',SUPABASE_ANON_KEY:'sb_publishable_Gcfg0XgAJJibTGBOV6YlNg_bChA-rG6'};
