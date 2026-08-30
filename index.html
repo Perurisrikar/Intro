@@ -5,7 +5,44 @@
 <section id="dashboardView" class="card hidden"><div class="dash-head"><div><span class="eyebrow">WELCOME</span><h2 id="dashName"></h2><p class="muted" id="dashMeta"></p></div><button class="ghost" id="logout">Log out</button></div><div class="rating"><h3>Rate my speech</h3><p class="muted">Your feedback helps me improve as your CR.</p><div id="stars" class="stars" role="radiogroup"></div><textarea id="feedback" maxlength="300" placeholder="Optional feedback…"></textarea><button id="submitRating">Submit feedback</button><p id="ratingMsg" class="success"></p></div></section>
 <section id="adminLoginView" class="card hidden"><button class="back" id="adminBack">← Back</button><div class="admin-title"><span class="eyebrow">CR ADMIN</span><h2>Admin login</h2><p class="muted">Use the Supabase Auth account created for the CR.</p></div><div class="form-stack"><input id="adminEmail" type="email" placeholder="Admin email" autocomplete="username"><input id="adminPassword" type="password" placeholder="Password" autocomplete="current-password"><button id="adminLogin">Sign in</button><p id="adminError" class="error"></p></div></section>
 <section id="adminView" class="card hidden"><div class="dash-head"><div><span class="eyebrow">CR CONTROL CENTER</span><h2>Admin dashboard</h2><p class="muted">Manage students, private questions and speech ratings.</p></div><button class="ghost" id="adminLogout">Sign out</button></div><div class="stats" id="stats"></div><div class="tabs"><button class="tab active" data-tab="studentsTab">Students</button><button class="tab" data-tab="questionsTab">Questions</button><button class="tab" data-tab="ratingsTab">Ratings</button></div>
-<div id="studentsTab" class="tab-panel"><div class="section-head"><h3>Students</h3><button id="addStudent">+ Add student</button></div><div id="studentTable" class="table-wrap"></div></div>
+<div id="debugBox" style="
+    position:fixed;
+    z-index:99999;
+    bottom:0;
+    left:0;
+    right:0;
+    max-height:40vh;
+    overflow:auto;
+    background:#000;
+    color:#00ff66;
+    padding:12px;
+    font:13px monospace;
+"></div>
+
+<script>
+const debugBox = document.getElementById("debugBox");
+
+function DEBUG(msg) {
+    debugBox.innerHTML +=
+        "<div>" +
+        String(msg).replace(/</g, "&lt;") +
+        "</div>";
+}
+
+DEBUG("HTML loaded");
+
+window.addEventListener("error", e => {
+    DEBUG("❌ JS ERROR: " + e.message);
+    DEBUG("File: " + e.filename);
+    DEBUG("Line: " + e.lineno);
+});
+
+window.addEventListener("unhandledrejection", e => {
+    DEBUG("❌ PROMISE ERROR: " + e.reason);
+});
+
+DEBUG("Debug system ready");
+</script><div id="studentsTab" class="tab-panel"><div class="section-head"><h3>Students</h3><button id="addStudent">+ Add student</button></div><div id="studentTable" class="table-wrap"></div></div>
 <div id="questionsTab" class="tab-panel hidden"><div class="section-head"><h3>Private questions</h3><button id="addQuestion">+ Add question</button></div><p class="muted small">Answers are sent to the server and stored as hashes; they are never displayed back here.</p><div id="questionTable" class="table-wrap"></div></div>
 <div id="ratingsTab" class="tab-panel hidden"><div class="section-head"><h3>Speech ratings</h3><button id="refreshRatings">Refresh</button></div><div id="ratingTable" class="table-wrap"></div></div></section>
 <div id="modal" class="modal hidden"><div class="modal-box"><div class="modal-head"><h3 id="modalTitle">Edit</h3><button id="modalClose" class="ghost">✕</button></div><div id="modalBody"></div></div></div>
