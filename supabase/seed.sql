@@ -1,0 +1,4 @@
+-- Import students from data/students.json using the Supabase Table Editor or SQL.
+-- The project package includes the original 64-student list as data/students.json.
+-- Do NOT import hall-ticket numbers, marks, ranks, phone numbers, or other sensitive fields.
+-- After creating the students, add private questions through the CR Admin dashboard.
